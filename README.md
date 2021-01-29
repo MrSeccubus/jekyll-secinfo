@@ -2,7 +2,7 @@
 
 This Jekyll pluging provides a tag and filter that turns references to security related info (currently only CVEs) into clickable links.
 
-[![<MrSeccubs>](https://circleci.com/gh/MrSeccubus/tree/main/jekyll-secinfo.svg?style=svg)](https://app.circleci.com/pipelines/github/MrSeccubus/jekyll-secinfo?branch=main)
+[![<MrSeccubs>](https://circleci.com/gh/MrSeccubus/jekyll-secinfo.svg/tree/main?style=svg)](https://app.circleci.com/pipelines/github/MrSeccubus/jekyll-secinfo?branch=main) 
 
 
 ## Installation
