@@ -6,6 +6,10 @@ jobs:
       - image: ruby:latest
     steps:
       - checkout
+      - run: 
+          name: Set up
+          command: |
+            bundle install
       - run:
           name: Rake test
           command: |
