@@ -9,11 +9,11 @@ jobs:
       - run: 
           name: Set up
           command: |
-            bundle install
+            bundle install --jobs 4
       - run:
-          name: Rake test
+          name: Rake :spec
           command: |
-            rake test
+            rake 
 
   upload:
     docker:
