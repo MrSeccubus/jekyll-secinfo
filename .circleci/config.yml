@@ -41,8 +41,8 @@ jobs:
           command: |
             mkdir ~/.gem
             echo "---\n:rubygems_api_key: $RUBYGEM_API_KEY" > ~/.gem/credentials
-            gem push
-            
+            gem push pkg/*.gem
+
 workflows:
   version: 2
   build_and_upload:
