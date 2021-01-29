@@ -5,6 +5,7 @@ jobs:
     docker:
       - image: mrseccubus/github-pages:latest
     steps:
+      - run: (cd /root/;rm -rf project;mkdir project)
       - checkout
       - run: 
           name: Set up
