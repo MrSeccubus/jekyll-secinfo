@@ -7,7 +7,8 @@ This Jekyll pluging provides a tag and filter that turns references to security 
 [![Gem Version](https://badge.fury.io/rb/jekyll-secinfo.svg)](https://badge.fury.io/rb/jekyll-secinfo)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/codeclimate/codeclimate/test_coverage)
-
+[![MIT License]("https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/MrSeccubus/jekyll-secinfo/blob/main/LICENSE.txt)
+[![Gem downloads](https://img.shields.io/gem/dt/jekyll-secinfo)](https://rubygems.org/gems/jekyll-secinfo)
 ## Installation
 
 Add this line to your Gemfile:
