@@ -5,6 +5,8 @@ This Jekyll pluging provides a tag and filter that turns references to security 
 
 [![<MrSeccubs>](https://circleci.com/gh/MrSeccubus/jekyll-secinfo.svg/tree/main?style=svg)](https://app.circleci.com/pipelines/github/MrSeccubus/jekyll-secinfo?branch=main) 
 [![Gem Version](https://badge.fury.io/rb/jekyll-secinfo.svg)](https://badge.fury.io/rb/jekyll-secinfo)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/codeclimate/codeclimate/test_coverage)
 
 ## Installation
 
