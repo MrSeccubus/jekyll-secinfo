@@ -33,7 +33,7 @@ module Jekyll::Secinfo
 				when "cvedetails"
 					config[CONFIG_NAME]["cve"]["url"] = "https://www.cvedetails.com/cve/CVE-%s/"
 				when "nvd"
-					config[CONFIG_NAME]["cve"]["url"] = "https://nvd.nist.gov/vuln/detail/"
+					config[CONFIG_NAME]["cve"]["url"] = "https://nvd.nist.gov/vuln/detail/CVE-"
 				else
 					# Unknown CVE style unsing 'mitre'-style instead
 					config[CONFIG_NAME]["cve"]["url"] = "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"

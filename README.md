@@ -1,6 +1,6 @@
-# Jekyll Youtube
+# Jekyll Secinfo
 
-This Jekyll pluging provides a tag that takes a Youtube URL and generates a (responsive) html snippet to embed the video into your site.
+This Jekyll pluging provides a tag and filter that turns references to security related info (currently only CVEs) into clickable links.
 
 ## Installation
 
@@ -8,7 +8,7 @@ Add this line to your Gemfile:
 
 ```ruby
 group :jekyll_plugins do
-  gem "jekyll-youtube"
+  gem "jekyll-secinfo"
 end
 ```
 
@@ -18,53 +18,78 @@ And then execute:
 
 Alternatively install the gem yourself as:
 
-    $ gem install jekyll-youtube
+    $ gem install jekyll-secinfo
 
 and put this in your ``_config.yml`` 
 
 ```yaml
-plugins: [jekyll-youtube]
- # This will require each of these gems automatically.
+plugins: 
+- jekyll-secinfo
+# This will require each of these gems automatically.
 ```
 
 ## Usage
 
-```
- {% youtube "https://www.youtube.com/watch?v=ho8-vK0L1_8" %}
-```
-or using variables/front matter
+As a tag `{% cve CVE-2019-19781 %}` or as a filter `{{ "cve-2019-19781" | cve }}`
 
-```
-{% youtube page.youtubeurl %}
-```
+For CVE multiple formats are accepted:
+* Full CVE in lower or upper case e.g. `CVE-2019-19781` or `cve-2019-19781`
+* Just the number e.g. `2019-19781`
 
 ## Result
 
 By default the plugin will output the following code
 
-
 ```markup
-<style>
-.embed-container {
-  position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-  max-width: 100%;
-}
-.embed-container iframe,
-.embed-container object,
-.embed-container embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-</style>
-<div class='embed-container'>
-  <iframe title="YouTube video player" width="640" height="390" src="http://www.youtube.com/embed/ho8-vK0L1_8" frameborder="0" allowfullscreen></iframe>
-</div>
+<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19781" class="cve">CVE-2019-19781</a>
 ```
 
-You can specify your own snippet by creating a partial ``_includes/youtube.html``. Inside that partial the Youtube ID is available as ``{{ youtube_id }}``.
+## Configuration
+
+The behaviour of this plugin can be configured in `_config.yml`
+
+```yml
+jekyll-secinfo: 
+  cve: 
+    style: mitre    # Supported styles are mitre, nvd and cvedetails
+    url:            # Style is ignored if a custom URL is defined.
+```
+
+You can also put these values in the front matter of a page to override the values in `_config.yml` for a specific page.
+
+### Styles
+
+For CVE's the style influences the way a tag or filter is rendered. This is how this input `{% cve CVE-2019-19781 %}` or as a filter `{{ "CVE-2019-19781" | cve }}` will be rendered in different styles:
+
+mitre
+```markup
+<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19781" class="cve">CVE-2019-19781</a>
+```
+
+mitre
+```markup
+<a href="https://nvd.nist.gov/vuln/detail/CVE-2019-19781" class="cve">CVE-2019-19781</a>
+```
+
+mitre
+```markup
+<a href="https://www.cvedetails.com/cve/CVE-2019-19781/" class="cve">CVE-2019-19781</a>
+```
+
+### Using your own URL
+
+You can specify a custom URL to be used as well. If the url includes `%s` this will be substituted with the number part of the CVE once. Otherwise the number part of the CVE will be appended to the url.
+
+```markup
+jekyll-secinfo: 
+  cve: 
+    url: http://localhost:4500/CVE-%s.html
+---
+{% cve 1999-9999 %}
+```
+
+Will reneder as
+```markup
+<p><a href="http://localhost:4500/CVE-1999-99999.html" class="cve">CVE-1999-99999</a></p>
+```
+

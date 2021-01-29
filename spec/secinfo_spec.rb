@@ -116,9 +116,9 @@ RSpec.describe(Jekyll::Secinfo) do
   end
 
   it "all {\% cve tags should be replace in nvd page" do
-    expect(nvd_page.output).to include('full <a href="https://nvd.nist.gov/vuln/detail/2020-8200" class="cve">CVE-2020-8200</a> full')
-    expect(nvd_page.output).to include('lower <a href="https://nvd.nist.gov/vuln/detail/2018-20808" class="cve">CVE-2018-20808</a> lower')
-    expect(nvd_page.output).to include('number <a href="https://nvd.nist.gov/vuln/detail/2000-1206" class="cve">CVE-2000-1206</a> number')
+    expect(nvd_page.output).to include('full <a href="https://nvd.nist.gov/vuln/detail/CVE-2020-8200" class="cve">CVE-2020-8200</a> full')
+    expect(nvd_page.output).to include('lower <a href="https://nvd.nist.gov/vuln/detail/CVE-2018-20808" class="cve">CVE-2018-20808</a> lower')
+    expect(nvd_page.output).to include('number <a href="https://nvd.nist.gov/vuln/detail/CVE-2000-1206" class="cve">CVE-2000-1206</a> number')
     expect(nvd_page.output).to include('invalid cve-invalid  invalid')
   end
 
@@ -214,9 +214,9 @@ RSpec.describe(Jekyll::Secinfo) do
   end
 
   it "all {{ cve tags should be replace in nvd filter page" do
-    expect(nvd_filter.output).to include('full <a href="https://nvd.nist.gov/vuln/detail/2020-8200" class="cve">CVE-2020-8200</a> full')
-    expect(nvd_filter.output).to include('lower <a href="https://nvd.nist.gov/vuln/detail/2018-20808" class="cve">CVE-2018-20808</a> lower')
-    expect(nvd_filter.output).to include('number <a href="https://nvd.nist.gov/vuln/detail/2000-1206" class="cve">CVE-2000-1206</a> number')
+    expect(nvd_filter.output).to include('full <a href="https://nvd.nist.gov/vuln/detail/CVE-2020-8200" class="cve">CVE-2020-8200</a> full')
+    expect(nvd_filter.output).to include('lower <a href="https://nvd.nist.gov/vuln/detail/CVE-2018-20808" class="cve">CVE-2018-20808</a> lower')
+    expect(nvd_filter.output).to include('number <a href="https://nvd.nist.gov/vuln/detail/CVE-2000-1206" class="cve">CVE-2000-1206</a> number')
     expect(nvd_filter.output).to include('invalid cve-invalid invalid')
   end
 
