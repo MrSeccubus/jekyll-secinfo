@@ -3,7 +3,7 @@ jobs:
 
   test_and_build:
     docker:
-      - image: mrseccubus/github-pages:latest
+      - image: ruby:latest
     steps:
       - run: (cd /root/;rm -rf project;mkdir project)
       - checkout
