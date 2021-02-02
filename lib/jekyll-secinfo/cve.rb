@@ -35,7 +35,7 @@ module Jekyll::Secinfo
 
     def render(context)
       cve_text = @text.strip
-      out = Cve.cve_to_link(cve_text, context["site"]["config"], context["page"])
+      out = Cve.cve_to_link(cve_text, context["site"], context["page"])
       return out if out
       return @text
     end

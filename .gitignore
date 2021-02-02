@@ -10,3 +10,4 @@
 .DS_Store
 /spec/fixtures/.jekyll-cache
 *.gem
+*.bak
