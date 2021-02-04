@@ -9,7 +9,10 @@ module Jekyll::Secinfo
 	class Config
 				
 		def self.get(site_config, page)
-			config = { "cve" => {} }
+			config = { 
+				"cve" => {},
+				"cwe" => {} 
+			}
 			if site_config && site_config.key?(CONFIG_NAME) 
 				#config["site"] = site_config[CONFIG_NAME]
 				if site_config[CONFIG_NAME].key?("cve") && site_config[CONFIG_NAME]["cve"]
@@ -20,17 +23,35 @@ module Jekyll::Secinfo
 						config["cve"]["url"] = site_config[CONFIG_NAME]["cve"]["url"]
 					end
 				end
+				if site_config[CONFIG_NAME].key?("cwe") && site_config[CONFIG_NAME]["cwe"]
+					if site_config[CONFIG_NAME]["cwe"].key?("style") && site_config[CONFIG_NAME]["cwe"]["style"]
+						config["cwe"]["style"] = site_config[CONFIG_NAME]["cwe"]["style"]
+					end
+					if site_config[CONFIG_NAME]["cwe"].key?("url") && site_config[CONFIG_NAME]["cwe"]["url"]
+						config["cwe"]["url"] = site_config[CONFIG_NAME]["cwe"]["url"]
+					end
+				end
 			end
 
 			if page.key?(CONFIG_NAME) && page[CONFIG_NAME]
 	    		if page[CONFIG_NAME].key?("cve") && page[CONFIG_NAME]["cve"]
 	    			if page[CONFIG_NAME]["cve"].key?("style") && page[CONFIG_NAME]["cve"]["style"]
 	    				config["cve"]["style"]=page[CONFIG_NAME]["cve"]["style"]
-	    				config["cve"]["url"]=nil
+	    				config["cve"].delete("url")
 		    		end
 	    			if page[CONFIG_NAME]["cve"].key?("url") && page[CONFIG_NAME]["cve"]["url"]
 	    				config["cve"]["url"]=page[CONFIG_NAME]["cve"]["url"]
 	    				config["cve"].delete("style")
+		    		end
+		    	end
+	    		if page[CONFIG_NAME].key?("cwe") && page[CONFIG_NAME]["cwe"]
+	    			if page[CONFIG_NAME]["cwe"].key?("style") && page[CONFIG_NAME]["cwe"]["style"]
+	    				config["cwe"]["style"]=page[CONFIG_NAME]["cwe"]["style"]
+	    				config["cwe"].delete("url")
+		    		end
+	    			if page[CONFIG_NAME]["cwe"].key?("url") && page[CONFIG_NAME]["cwe"]["url"]
+	    				config["cwe"]["url"]=page[CONFIG_NAME]["cwe"]["url"]
+	    				config["cwe"].delete("style")
 		    		end
 		    	end
 			end			
@@ -48,6 +69,19 @@ module Jekyll::Secinfo
 					config["cve"]["url"] = "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
 				end
 			end
+
+			if not config["cwe"]["url"]  
+				case config["cwe"]["style"]
+				when "mitre", "nvd"
+					config["cwe"]["url"] = "https://cwe.mitre.org/data/definitions/%s.html"
+				when "cvedetails"
+					config["cwe"]["url"] = "https://www.cvedetails.com/cwe-details/"
+				else
+					# Unknown CWE style using 'mitre'-style instead
+					config["cwe"]["url"] = "https://cwe.mitre.org/data/definitions/%s.html"
+				end
+			end
+
 
 			return config
 		end #get_config
