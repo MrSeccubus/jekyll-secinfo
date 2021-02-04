@@ -1,6 +1,6 @@
 # Jekyll Secinfo
 
-This Jekyll pluging provides a tag and filter that turns references to security related info (currently only CVEs) into clickable links.
+This Jekyll pluging provides a tag and filter that turns references to security related info (CVEs and CWEs) into clickable links.
 
 
 [![Build Status](https://img.shields.io/circleci/build/github/MrSeccubus/jekyll-secinfo/main)](https://circleci.com/gh/MrSeccubus/jekyll-secinfo)
@@ -36,18 +36,24 @@ plugins:
 
 ## Usage
 
-As a tag `{% cve CVE-2019-19781 %}` or as a filter `{{ "cve-2019-19781" | cve }}`
+As a tag `{% cve CVE-2019-19781 %}`/`{% cwe CWE-78 %}` or as a filter `{{ "cve-2019-19781" | cve }}`/`{{ "cwe-787" | cwe }}`
 
-For CVE multiple formats are accepted:
-* Full CVE in lower or upper case e.g. `CVE-2019-19781` or `cve-2019-19781`
-* Just the number e.g. `2019-19781`
+For CVE and CWE filters an tags multiple formats are accepted:
+* Full CVE in lower or upper case e.g. `CVE-2019-19781`, `CVE-787`, `cve-2019-19781` or `cve-787`
+* Just the number e.g. `2019-19781` or `787`
 
 ## Result
 
 By default the plugin will output the following code
 
+CVEs
 ```markup
-<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19781" class="cve">CVE-2019-19781</a>
+<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19781" class="cve secinfo">CVE-2019-19781</a>
+```
+
+CWEs
+```markup
+<a href="https://cwe.mitre.org/data/definitions/787.html" class="cwe secinfo">
 ```
 
 ## Configuration
@@ -59,28 +65,49 @@ jekyll-secinfo:
   cve: 
     style: mitre    # Supported styles are mitre, nvd and cvedetails
     url:            # Style is ignored if a custom URL is defined.
+   cwe
+    style: mitre    # Supported styles are mitre and cvedetails
+    url:            # Style is ignored if a custom URL is defined.
 ```
 
 You can also put these values in the front matter of a page to override the values in `_config.yml` for a specific page.
 
 ### Styles
 
-For CVE's the style influences the way a tag or filter is rendered. This is how this input `{% cve CVE-2019-19781 %}` or as a filter `{{ "CVE-2019-19781" | cve }}` will be rendered in different styles:
+For CVEs and CWEs the style influences the way a tag or filter is rendered. This is how the following input will be rendered in different styles
 
-mitre
+input as tags
 ```markup
-<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19781" class="cve">CVE-2019-19781</a>
+CVE: {% cve CVE-2019-19781 %}
+CWE: {% cwe CWE-79 %}
 ```
 
-mitre
+input with filters:
 ```markup
-<a href="https://nvd.nist.gov/vuln/detail/CVE-2019-19781" class="cve">CVE-2019-19781</a>
+CVE: {{ "CVE-2019-19781" | cve }}
+CWE: {{ "cwe-79" | cwe }}
 ```
 
-mitre
+
+Mitre
 ```markup
-<a href="https://www.cvedetails.com/cve/CVE-2019-19781/" class="cve">CVE-2019-19781</a>
+CVE: <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19781" class="cve secinfo">CVE-2019-19781</a>
+CWE: <a href="https://cwe.mitre.org/data/definitions/79.html" class="cwe secinfo">CWE-79</a>
 ```
+
+
+CVE details
+```markup
+CVE: <a href="https://www.cvedetails.com/cve/CVE-2019-19781/" class="cve secinfo">CVE-2019-19781</a>
+CWE: <a href="https://www.cvedetails.com/cwe-details/79" class="cwe secinfo">CWE-79</a>
+```
+
+NVD
+```markup
+CVE: <a href="https://nvd.nist.gov/vuln/detail/CVE-2019-19781" class="cve secinfo">CVE-2019-19781</a>
+CWE: <a href="https://cwe.mitre.org/data/definitions/79.html" class="cwe secinfo">CWE-79</a>
+```
+(Since CWE doesn;t support the style `nvd` it falls back tot he default `mitre` style)
 
 ### Using your own URL
 
@@ -90,12 +117,17 @@ You can specify a custom URL to be used as well. If the url includes `%s` this w
 jekyll-secinfo: 
   cve: 
     url: http://localhost:4500/CVE-%s.html
+  cwe: 
+    url: http://localhost:4500/CWE-
 ---
 {% cve 1999-9999 %}
+{% cve 79 %}
+
 ```
 
 Will reneder as
 ```markup
-<p><a href="http://localhost:4500/CVE-1999-99999.html" class="cve">CVE-1999-99999</a></p>
+<p><a href="http://localhost:4500/CVE-1999-99999.html" class="cve secinfo">CVE-1999-99999</a>
+<a href="http://localhost:4500/CWE-79" class="cwe secinfo">CVE-1999-99999</a></p>
 ```
 

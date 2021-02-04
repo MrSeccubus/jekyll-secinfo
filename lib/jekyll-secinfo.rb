@@ -8,6 +8,7 @@ require "jekyll-secinfo/logger"
 
 # Core
 require "jekyll-secinfo/cve" 
+require "jekyll-secinfo/cwe" 
 
 module Jekyll::Secinfo
   Logger.display_info
