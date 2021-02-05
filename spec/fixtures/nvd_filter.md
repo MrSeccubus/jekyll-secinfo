@@ -6,6 +6,7 @@ jekyll-secinfo:
     style: nvd
   cwe: 
     style: nvd
+  divd:
 poep-in-je-oren: true
 ---
 

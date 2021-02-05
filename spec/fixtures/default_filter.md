@@ -12,3 +12,8 @@ full {{ "CWE-79" | cwe }} full
 lower {{ "cwe-787" | cwe }} lower
 number {{ "20" | cwe }} number
 invalid {{ "cwe-invalid" | cwe }} invalid
+
+full {% divd DIVD-2020-00001 %} full
+lower {% divd divd-2020-00002 %} lower
+number {% divd 2020-00003 %} number
+invalid {% divd divd-invalid %} invalid

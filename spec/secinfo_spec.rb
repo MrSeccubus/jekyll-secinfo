@@ -75,6 +75,9 @@ RSpec.describe(Jekyll::Secinfo) do
 	      							},
 	      							"cwe" => {
 	      								"url" => "https://localhost/%s/info.html"
+	      							},
+	      							"divd" => {
+	      								"url" => "https://localhost/%s/info.html"
 	      							}
 	      						}
 	      					)
@@ -137,7 +140,8 @@ RSpec.describe(Jekyll::Secinfo) do
 	        			expect(@site.config["jekyll-secinfo"]).to eq(
 	        				{
 	        					"cve"=>{"url"=>"https://localhost/%s/info.html"}, 
-	        					"cwe"=>{"url"=>"https://localhost/%s/info.html"}
+	        					"cwe"=>{"url"=>"https://localhost/%s/info.html"},
+	        					"divd" => {"url"=>"https://localhost/%s/info.html"}
 	        				}
 	        			)
 	        		else
@@ -154,41 +158,48 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@index_page.data)).to eq(
 				        		{
 				        			"cve"=>{"url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"}, 
-				        			"cwe"=>{"url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "mitre"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@index_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"mitre", "url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"}, 
-				        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "weird"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@index_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"feiuyvineueaiuse", "url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"}, 
-				        			"cwe"=>{"style"=>"feiuyvineueaiuse", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"style"=>"feiuyvineueaiuse", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "nvd"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@index_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"nvd", "url"=>"https://nvd.nist.gov/vuln/detail/CVE-"}, 
-				        			"cwe"=>{"style"=>"nvd", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}}	
+				        			"cwe"=>{"style"=>"nvd", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
+				        		}	
 				        	)
 			        	when "cvedetails"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@index_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cve/CVE-%s/"}, 
-				        			"cwe"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"}
+				        			"cwe"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "custom"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@index_page.data)).to eq(
 				        		{
 				        			"cve"=>{"url"=>"https://localhost/%s/info.html"}, 
-				        			"cwe"=>{"url"=>"https://localhost/%s/info.html"}
+				        			"cwe"=>{"url"=>"https://localhost/%s/info.html"},
+				        			"divd" => {"url"=>"https://localhost/%s/info.html"}
 				        		}
 				        	)
 		        		else
@@ -265,6 +276,34 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	end
 				        end 
 				    end # cwe
+
+	        		describe "divd" do
+	        			it "all {\% cwe tags should be gone" do
+						    expect(@index_page.output).not_to include("{\% divd")
+							expect(@index_page.output).not_to include('full {% divd DIVD-2020-00001 %} full')
+							expect(@index_page.output).not_to include('lower {% divd divd-2020-00002 %} lower')
+							expect(@index_page.output).not_to include('number {% divd 2020-00003 %} number')
+							expect(@index_page.output).not_to include('invalid {% divd divd-invalid %} invalid')
+						end
+					
+
+						it "all {\% cwe tags should be replaced" do
+			        		case @type
+			        		when "default", "mitre", "weird", "nvd", "cvedetails"
+								expect(@index_page.output).to include('full <a href="https://csirt.divd.nl/DIVD-2020-00001" class="divd secinfo">DIVD-2020-00001</a> full')
+								expect(@index_page.output).to include('lower <a href="https://csirt.divd.nl/DIVD-2020-00002" class="divd secinfo">DIVD-2020-00002</a> lower')
+								expect(@index_page.output).to include('number <a href="https://csirt.divd.nl/DIVD-2020-00003" class="divd secinfo">DIVD-2020-00003</a> number')
+								expect(@index_page.output).to include('invalid divd-invalid  invalid')
+				        	when "custom"
+								expect(@index_page.output).to include('full <a href="https://localhost/2020-00001/info.html" class="divd secinfo">DIVD-2020-00001</a> full')
+								expect(@index_page.output).to include('lower <a href="https://localhost/2020-00002/info.html" class="divd secinfo">DIVD-2020-00002</a> lower')
+								expect(@index_page.output).to include('number <a href="https://localhost/2020-00003/info.html" class="divd secinfo">DIVD-2020-00003</a> number')
+								expect(@index_page.output).to include('invalid divd-invalid  invalid')
+			        		else
+			        			raise "config type '#{@type}' unexpected"
+				        	end
+				        end 
+				    end # cwe
 			    end #index page
 
 			    describe "mitre page" do
@@ -272,7 +311,8 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@mitre_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"mitre", "url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"}, 
-				        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        end
@@ -318,7 +358,8 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@weird_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"supercalifragicexpialidocious", "url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"},
-				        			"cwe"=>{"style"=>"supercalifragicexpialidocious", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"style"=>"supercalifragicexpialidocious", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        end
@@ -364,7 +405,8 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@nvd_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"nvd", "url"=>"https://nvd.nist.gov/vuln/detail/CVE-"}, 
-				        			"cwe"=>{"style"=>"nvd", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"style"=>"nvd", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        end
@@ -411,7 +453,8 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@cvedetails_page.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cve/CVE-%s/"},
-				        			"cwe" => {"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"}
+				        			"cwe" => {"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        end
@@ -457,8 +500,8 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@custom_page.data)).to eq(
 				        		{
 				        			"cve"=>{"url"=>"https://localhost/%s/details"},
-				        			"cwe" => {"url"=>"https://localhost/%s/details"}
-				        		}
+				        			"cwe" => {"url"=>"https://localhost/%s/details"},
+									"divd" => {"url"=>"https://localhost/%s/details"}				        		}
 				        	)
 			        end
 
@@ -495,6 +538,23 @@ RSpec.describe(Jekyll::Secinfo) do
 							expect(@custom_page.output).to include('invalid cwe-invalid  invalid')
 						end
 					end #cwe
+
+	        		describe "divd" do
+				    	specify "are all gone" do
+						    expect(@custom_page.output).not_to include("{\% divd")
+							expect(@custom_page.output).not_to include('full {% divd DIVD-2020-00001 %} full')
+							expect(@custom_page.output).not_to include('lower {% divd divd-2020-00002 %} lower')
+							expect(@custom_page.output).not_to include('number {% divd 2020-00003 %} number')
+							expect(@custom_page.output).not_to include('invalid {% divd divd-invalid %} invalid')
+						end
+					
+						specify "are all correctly rendered" do
+							expect(@custom_page.output).to include('full <a href="https://localhost/2020-00001/details" class="divd secinfo">DIVD-2020-00001</a> full')
+							expect(@custom_page.output).to include('lower <a href="https://localhost/2020-00002/details" class="divd secinfo">DIVD-2020-00002</a> lower')
+							expect(@custom_page.output).to include('number <a href="https://localhost/2020-00003/details" class="divd secinfo">DIVD-2020-00003</a> number')
+							expect(@custom_page.output).to include('invalid divd-invalid  invalid')
+				        end 
+				    end #divd
 				end #custom
 
 				#
@@ -507,14 +567,16 @@ RSpec.describe(Jekyll::Secinfo) do
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@default_filter.data)).to eq(
 				        		{
 				        			"cve"=>{"url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"},
-				        			"cwe"=>{"url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "mitre"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@default_filter.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"mitre", "url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"},
-				        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "weird"
@@ -522,27 +584,31 @@ RSpec.describe(Jekyll::Secinfo) do
 				        		{
 				        			"cve"=>{"style"=>"feiuyvineueaiuse", "url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"},
 				        			"cwe"=>{"style"=>"feiuyvineueaiuse", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "nvd"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@default_filter.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"nvd", "url"=>"https://nvd.nist.gov/vuln/detail/CVE-"},
-				        			"cwe"=>{"style"=>"nvd", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+				        			"cwe"=>{"style"=>"nvd", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "cvedetails"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@default_filter.data)).to eq(
 				        		{
 				        			"cve"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cve/CVE-%s/"},
-				        			"cwe"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"}
+				        			"cwe"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"},
+				        			"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 				        		}
 				        	)
 			        	when "custom"
 				        	expect(Jekyll::Secinfo::Config.get(@site.config,@default_filter.data)).to eq(
 				        		{
 				        			"cve"=>{"url"=>"https://localhost/%s/info.html"},
-				        			"cwe"=>{"url"=>"https://localhost/%s/info.html"}
+				        			"cwe"=>{"url"=>"https://localhost/%s/info.html"},
+				        			"divd" => {"url"=>"https://localhost/%s/info.html"}
 				        		}
 				        	)
 		        		else
@@ -614,6 +680,32 @@ RSpec.describe(Jekyll::Secinfo) do
 						end
 					end #cwe 
 
+	        		describe "divd" do
+				    	specify "are all gone" do
+						    expect(@default_filter.output).not_to include("{\% divd")
+							expect(@default_filter.output).not_to include('full {% divd DIVD-2020-00001 %} full')
+							expect(@default_filter.output).not_to include('lower {% divd divd-2020-00002 %} lower')
+							expect(@default_filter.output).not_to include('number {% divd 2020-00003 %} number')
+							expect(@default_filter.output).not_to include('invalid {% divd divd-invalid %} invalid')
+						end
+					
+						specify "are all correctly rendered" do
+			        		case @type
+			        		when "default", "mitre", "weird", "nvd", "cvedetails"
+								expect(@default_filter.output).to include('full <a href="https://csirt.divd.nl/DIVD-2020-00001" class="divd secinfo">DIVD-2020-00001</a> full')
+								expect(@default_filter.output).to include('lower <a href="https://csirt.divd.nl/DIVD-2020-00002" class="divd secinfo">DIVD-2020-00002</a> lower')
+								expect(@default_filter.output).to include('number <a href="https://csirt.divd.nl/DIVD-2020-00003" class="divd secinfo">DIVD-2020-00003</a> number')
+				        	when "custom"
+								expect(@default_filter.output).to include('full <a href="https://localhost/2020-00001/info.html" class="divd secinfo">DIVD-2020-00001</a> full')
+								expect(@default_filter.output).to include('lower <a href="https://localhost/2020-00002/info.html" class="divd secinfo">DIVD-2020-00002</a> lower')
+								expect(@default_filter.output).to include('number <a href="https://localhost/2020-00003/info.html" class="divd secinfo">DIVD-2020-00003</a> number')
+			        		else
+			        			raise "config type '#{@type}' unexpected"
+				        	end
+							expect(@default_filter.output).to include('invalid divd-invalid  invalid')
+				        end 
+				    end #divd
+
 				end # default filter
 
 				describe "mitre filter" do
@@ -621,7 +713,8 @@ RSpec.describe(Jekyll::Secinfo) do
 			        	expect(Jekyll::Secinfo::Config.get(@site.config,@mitre_filter.data)).to eq(
 			        		{
 			        			"cve"=>{"style"=>"mitre","url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"},
-			        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+			        			"cwe"=>{"style"=>"mitre", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        		"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 			        		}
 			        	)
 			        end
@@ -666,7 +759,8 @@ RSpec.describe(Jekyll::Secinfo) do
 			        	expect(Jekyll::Secinfo::Config.get(@site.config,@weird_filter.data)).to eq(
 			        		{
 			        			"cve"=>{"style"=>"supercalifragicexpialidocious", "url"=>"https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"},
-			        			"cwe"=>{"style"=>"supercalifragicexpialidocious", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"}
+			        			"cwe"=>{"style"=>"supercalifragicexpialidocious", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        		"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 			        		}
 			        	)
 			        end
@@ -712,6 +806,7 @@ RSpec.describe(Jekyll::Secinfo) do
 			        		{
 			        			"cve"=>{"style"=>"nvd", "url"=>"https://nvd.nist.gov/vuln/detail/CVE-"},
 			        			"cwe"=>{"style"=>"nvd", "url"=>"https://cwe.mitre.org/data/definitions/%s.html"},
+				        		"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 			        		}
 			        	)
 			        end
@@ -757,7 +852,8 @@ RSpec.describe(Jekyll::Secinfo) do
 			        	expect(Jekyll::Secinfo::Config.get(@site.config,@cvedetails_filter.data)).to eq(
 			        		{
 		        				"cve"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cve/CVE-%s/"}, 
-		        				"cwe"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"}
+		        				"cwe"=>{"style"=>"cvedetails", "url"=>"https://www.cvedetails.com/cwe-details/"},
+				        		"divd" => {"url"=>"https://csirt.divd.nl/DIVD-"}
 			        		}
 		        		)
 			        end
@@ -802,7 +898,8 @@ RSpec.describe(Jekyll::Secinfo) do
 			        	expect(Jekyll::Secinfo::Config.get(@site.config,@custom_filter.data)).to eq(
 			        		{
 			        			"cve"=>{"url"=>"https://localhost/%s/details"},
-			        			"cwe" => {"url"=>"https://localhost/%s/details"}
+			        			"cwe" => {"url"=>"https://localhost/%s/details"},
+				        		"divd" => {"url"=>"https://localhost/%s/details"}
 			        		}
 			        	)
 			        end
