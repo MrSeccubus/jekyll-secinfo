@@ -1,6 +1,6 @@
 # Jekyll Secinfo
 
-This Jekyll pluging provides a tag and filter that turns references to security related info (CVEs and CWEs) into clickable links.
+This Jekyll pluging provides a tag and filter that turns references to security related info (CVEs, CWEs and DIVD case numbers) into clickable links.
 
 
 [![Build Status](https://img.shields.io/circleci/build/github/MrSeccubus/jekyll-secinfo/main)](https://circleci.com/gh/MrSeccubus/jekyll-secinfo)
@@ -8,6 +8,7 @@ This Jekyll pluging provides a tag and filter that turns references to security 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/codeclimate/codeclimate/test_coverage)
 [![MIT License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/MrSeccubus/jekyll-secinfo/blob/main/LICENSE.txt)
 [![Gem downloads](https://img.shields.io/gem/dt/jekyll-secinfo)](https://rubygems.org/gems/jekyll-secinfo)
+
 ## Installation
 
 Add this line to your Gemfile:
@@ -36,11 +37,11 @@ plugins:
 
 ## Usage
 
-As a tag `{% cve CVE-2019-19781 %}`/`{% cwe CWE-78 %}` or as a filter `{{ "cve-2019-19781" | cve }}`/`{{ "cwe-787" | cwe }}`
+As a tag `{% cve CVE-2019-19781 %}` / `{% cwe CWE-78 %}` / `{% divd DIVD-2020-00001 %}` or as a filter `{{ "cve-2019-19781" | cve }}` / `{{ "cwe-787" | cwe }}` / `{{ "divd-2020-0001" | divd }}`
 
-For CVE and CWE filters an tags multiple formats are accepted:
-* Full CVE in lower or upper case e.g. `CVE-2019-19781`, `CVE-787`, `cve-2019-19781` or `cve-787`
-* Just the number e.g. `2019-19781` or `787`
+For CVEs, CWEs and DIVD cas number filters an tags multiple formats are accepted:
+* Full CVE in lower or upper case e.g. `CVE-2019-19781`, `CVE-787`, `DIVD-2020-00001`, `cve-2019-19781`, `cve-787` or `divd-2020-00001`
+* Just the number e.g. `2019-19781`, `787` or `2020-00001`
 
 ## Result
 
@@ -56,6 +57,11 @@ CWEs
 <a href="https://cwe.mitre.org/data/definitions/787.html" class="cwe secinfo">
 ```
 
+DIVD case
+```markup
+<a href="https://csirt.divd.nl/DIVD-2020-00001" class="divd secinfo">DIVD-2020-00001</a>
+```
+
 ## Configuration
 
 The behaviour of this plugin can be configured in `_config.yml`
@@ -63,11 +69,13 @@ The behaviour of this plugin can be configured in `_config.yml`
 ```yml
 jekyll-secinfo: 
   cve: 
-    style: mitre    # Supported styles are mitre, nvd and cvedetails
-    url:            # Style is ignored if a custom URL is defined.
+     style: mitre   # Supported styles are mitre, nvd and cvedetails
+     url:           # Style is ignored if a custom URL is defined.
    cwe
-    style: mitre    # Supported styles are mitre and cvedetails
-    url:            # Style is ignored if a custom URL is defined.
+     style: mitre   # Supported styles are mitre and cvedetails
+     url:           # Style is ignored if a custom URL is defined.
+   divd:
+     url:           # Custom URL for DIVD cases.
 ```
 
 You can also put these values in the front matter of a page to override the values in `_config.yml` for a specific page.
@@ -119,15 +127,18 @@ jekyll-secinfo:
     url: http://localhost:4500/CVE-%s.html
   cwe: 
     url: http://localhost:4500/CWE-
+  divd:
+    url: https://localhost:4000/cases/DIVD-
 ---
 {% cve 1999-9999 %}
 {% cve 79 %}
-
+{{ "2020-00001" | divd }}
 ```
 
-Will reneder as
+Will reneder as:
 ```markup
 <p><a href="http://localhost:4500/CVE-1999-99999.html" class="cve secinfo">CVE-1999-99999</a>
-<a href="http://localhost:4500/CWE-79" class="cwe secinfo">CVE-1999-99999</a></p>
+<a href="http://localhost:4500/CWE-79" class="cwe secinfo">CVE-1999-99999</a>
+<a href="https://localhost:4000/cases/DIVD-2020-00001" class="divd secinfo">DIVD-2020-00001</a></p>
 ```
 
