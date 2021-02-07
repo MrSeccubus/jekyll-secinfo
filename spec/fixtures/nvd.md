@@ -6,6 +6,7 @@ jekyll-secinfo:
     style: nvd
   cwe: 
     style: nvd
+  divd:
 ---
 
 full {% cve CVE-2020-8200 %} full

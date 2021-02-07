@@ -6,6 +6,7 @@ jekyll-secinfo:
     style: supercalifragicexpialidocious
   cwe: 
     style: supercalifragicexpialidocious
+  divd:
 ---
 
 full {{ "CVE-2020-8200" | cve }} full

@@ -1,6 +1,0 @@
----
-title: Parker Moore
-type: author-info
----
-
-Parker "@parkr" Moore

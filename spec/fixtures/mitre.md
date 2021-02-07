@@ -6,6 +6,7 @@ jekyll-secinfo:
     style: mitre
   cwe: 
     style: mitre
+  divd:
 ---
 
 full {% cve CVE-2020-8200 %} full

@@ -6,6 +6,7 @@ jekyll-secinfo:
     style: cvedetails
   cwe: 
     style: cvedetails
+  divd:
 ---
 
 full {{ "CVE-2020-8200" | cve }} full

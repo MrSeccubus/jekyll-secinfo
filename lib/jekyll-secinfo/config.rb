@@ -11,8 +11,12 @@ module Jekyll::Secinfo
 		def self.get(site_config, page)
 			config = { 
 				"cve" => {},
-				"cwe" => {} 
+				"cwe" => {},
+				"divd" => {}
 			}
+
+			# CVE
+
 			if site_config && site_config.key?(CONFIG_NAME) 
 				#config["site"] = site_config[CONFIG_NAME]
 				if site_config[CONFIG_NAME].key?("cve") && site_config[CONFIG_NAME]["cve"]
@@ -21,14 +25,6 @@ module Jekyll::Secinfo
 					end
 					if site_config[CONFIG_NAME]["cve"].key?("url") && site_config[CONFIG_NAME]["cve"]["url"]
 						config["cve"]["url"] = site_config[CONFIG_NAME]["cve"]["url"]
-					end
-				end
-				if site_config[CONFIG_NAME].key?("cwe") && site_config[CONFIG_NAME]["cwe"]
-					if site_config[CONFIG_NAME]["cwe"].key?("style") && site_config[CONFIG_NAME]["cwe"]["style"]
-						config["cwe"]["style"] = site_config[CONFIG_NAME]["cwe"]["style"]
-					end
-					if site_config[CONFIG_NAME]["cwe"].key?("url") && site_config[CONFIG_NAME]["cwe"]["url"]
-						config["cwe"]["url"] = site_config[CONFIG_NAME]["cwe"]["url"]
 					end
 				end
 			end
@@ -42,16 +38,6 @@ module Jekyll::Secinfo
 	    			if page[CONFIG_NAME]["cve"].key?("url") && page[CONFIG_NAME]["cve"]["url"]
 	    				config["cve"]["url"]=page[CONFIG_NAME]["cve"]["url"]
 	    				config["cve"].delete("style")
-		    		end
-		    	end
-	    		if page[CONFIG_NAME].key?("cwe") && page[CONFIG_NAME]["cwe"]
-	    			if page[CONFIG_NAME]["cwe"].key?("style") && page[CONFIG_NAME]["cwe"]["style"]
-	    				config["cwe"]["style"]=page[CONFIG_NAME]["cwe"]["style"]
-	    				config["cwe"].delete("url")
-		    		end
-	    			if page[CONFIG_NAME]["cwe"].key?("url") && page[CONFIG_NAME]["cwe"]["url"]
-	    				config["cwe"]["url"]=page[CONFIG_NAME]["cwe"]["url"]
-	    				config["cwe"].delete("style")
 		    		end
 		    	end
 			end			
@@ -70,6 +56,32 @@ module Jekyll::Secinfo
 				end
 			end
 
+			# CWE
+
+			if site_config && site_config.key?(CONFIG_NAME) 
+				if site_config[CONFIG_NAME].key?("cwe") && site_config[CONFIG_NAME]["cwe"]
+					if site_config[CONFIG_NAME]["cwe"].key?("style") && site_config[CONFIG_NAME]["cwe"]["style"]
+						config["cwe"]["style"] = site_config[CONFIG_NAME]["cwe"]["style"]
+					end
+					if site_config[CONFIG_NAME]["cwe"].key?("url") && site_config[CONFIG_NAME]["cwe"]["url"]
+						config["cwe"]["url"] = site_config[CONFIG_NAME]["cwe"]["url"]
+					end
+				end
+			end
+
+			if page.key?(CONFIG_NAME) && page[CONFIG_NAME]
+	    		if page[CONFIG_NAME].key?("cwe") && page[CONFIG_NAME]["cwe"]
+	    			if page[CONFIG_NAME]["cwe"].key?("style") && page[CONFIG_NAME]["cwe"]["style"]
+	    				config["cwe"]["style"]=page[CONFIG_NAME]["cwe"]["style"]
+	    				config["cwe"].delete("url")
+		    		end
+	    			if page[CONFIG_NAME]["cwe"].key?("url") && page[CONFIG_NAME]["cwe"]["url"]
+	    				config["cwe"]["url"]=page[CONFIG_NAME]["cwe"]["url"]
+	    				config["cwe"].delete("style")
+		    		end
+		    	end
+			end			
+
 			if not config["cwe"]["url"]  
 				case config["cwe"]["style"]
 				when "mitre", "nvd"
@@ -82,6 +94,35 @@ module Jekyll::Secinfo
 				end
 			end
 
+			# DIVD
+
+			if site_config && site_config.key?(CONFIG_NAME) 
+				if site_config[CONFIG_NAME].key?("divd") && site_config[CONFIG_NAME]["divd"]
+					if site_config[CONFIG_NAME]["divd"].key?("url") && site_config[CONFIG_NAME]["divd"]["url"]
+						config["divd"]["url"] = site_config[CONFIG_NAME]["divd"]["url"]
+					end
+				end
+			end
+
+			if page.key?(CONFIG_NAME) && page[CONFIG_NAME]
+	    		if page[CONFIG_NAME].key?("divd")
+	    			if page[CONFIG_NAME]["divd"]
+		    			if page[CONFIG_NAME]["divd"].key?("url")
+		    				if page[CONFIG_NAME]["divd"]["url"]
+		    					config["divd"]["url"]=page[CONFIG_NAME]["divd"]["url"]
+			    			else
+			    				config["divd"].delete("url")
+			    			end
+			    		end
+			    	else
+			    		config["divd"] = {}
+			    	end
+		    	end
+			end			
+
+			if not config["divd"]["url"]  
+				config["divd"]["url"] = "https://csirt.divd.nl/DIVD-"
+			end      
 
 			return config
 		end #get_config

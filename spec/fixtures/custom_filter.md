@@ -8,6 +8,8 @@ jekyll-secinfo:
   cwe: 
     style: nvd
     url: https://localhost/%s/details
+  divd:
+    url: https://localhost/%s/details
 ---
 
 full {{ "CVE-2020-8200" | cve }} full
