@@ -2,9 +2,6 @@
 
 require 'jekyll-secinfo/version'
 
-using Rainbow
-
-
 module Jekyll::Secinfo
   class Logger
     def initialize(namespace)
